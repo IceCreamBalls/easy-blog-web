@@ -3,7 +3,7 @@
     <div class="header-wrap">
       <div class="logo-wrap">
         <div class="logo">
-          <span>打杂的！</span>
+          <span>龙玄博客</span>
         </div>
       </div>
       <div class="nav-right" clearfix>
@@ -37,19 +37,34 @@
             >
           </span>
           <span v-else>
-            <el-button
+            <!-- <el-button
               size="small"
               @click="logOut"
-              style="marginTop:6px;"
+              style="margintop: 6px"
               class="logbtn"
               >退出登录</el-button
             >
             <el-avatar
               class="avatar"
               size="large"
-              style="marginLeft:10px;position:absolute;fontSize:12px;"
+              style="marginleft: 10px; position: absolute; fontsize: 12px"
               >{{ displayName }}</el-avatar
-            >
+            > -->
+            <el-dropdown>
+              <span class="el-dropdown-link">
+                <el-avatar
+                  class="avatar"
+                  size="large"
+                  :src="user.avator_url"
+                  style="marginleft: 10px; position: absolute; fontsize: 12px"
+                ></el-avatar>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人信息</el-dropdown-item>
+                <el-dropdown-item divided>退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </span>
         </div>
       </div>
@@ -75,14 +90,14 @@
       <el-dialog
         :title="title"
         :visible.sync="dialogFormVisible"
-        style="width:800px;margin:0 auto;"
+        style="width: 800px; margin: 0 auto"
         @close="closeDialog"
         :modal-append-to-body="false"
       >
         <el-form
           :rules="rules"
           :model="registForm"
-          style="width:400px;"
+          style="width: 400px"
           ref="registForm"
           size="mini"
         >
@@ -138,17 +153,17 @@
           <el-button
             type="primary"
             size="small"
-            style="width:90%"
+            style="width: 90%"
             @click="registConfirm"
-            >{{ login === 'login' ? 'login' : 'register' }}</el-button
+            >{{ login === "login" ? "login" : "register" }}</el-button
           >
           <el-button
             size="small"
-            style="width:90%;marginTop:10px;marginLeft:0;"
+            style="width: 90%; margintop: 10px; marginleft: 0"
             @click="githublogin"
             v-if="login === 'login'"
           >
-            <i class="iconfont icon-github" style="fontSize:16px;"></i>
+            <i class="iconfont icon-github" style="fontsize: 16px"></i>
             github login
           </el-button>
         </el-form>
@@ -157,72 +172,78 @@
   </div>
 </template>
 <script>
-import '@/assets/scss/public.scss';
-import axios from '../../service';
-import { mapState, mapActions, mapMutations } from 'vuex';
-import { register, login } from '../../service/regist';
-import { Message } from 'element-ui';
+import "@/assets/scss/public.scss";
+import axios from "../../service";
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
+import { register, login, getUserInfo } from "../../service/regist";
+import { Message } from "element-ui";
 export default {
   data() {
     return {
+      user:{
+        username:"",
+        avator_url:""
+      },
       dialogFormVisible: false,
-      formLabelWidth: '80px',
-      login: 'register',
-      title: 'login',
+      formLabelWidth: "80px",
+      login: "register",
+      title: "login",
       showmenu: false,
       registForm: {
-        username: '',
-        displayName: '',
+        username: "",
+        displayName: "",
         password: null,
-        password2: null
+        password2: null,
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
         ],
         displayName: [
-          { required: true, message: '请输入昵称', trigger: 'blur' }
+          { required: true, message: "请输入昵称", trigger: "blur" },
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         password2: [
-          { required: true, message: '请输入确认密码', trigger: 'blur' }
-        ]
-      }
+          { required: true, message: "请输入确认密码", trigger: "blur" },
+        ],
+      },
     };
   },
   computed: {
     ...mapState({
-      pagination: state => state.article.pagination,
-      isLogin: state => state.login.isLogin,
-      displayName: state => state.login.displayName
-    })
+      pagination: (state) => state.article.pagination,
+      isLogin: (state) => state.login.isLogin,
+      displayName: (state) => state.login.displayName,
+    }),
   },
   created() {
     // 获取github授权后的用户信息
-    const username = window.location.search.split('=');
+    const username = window.location.search.split("=");
     let userinfo = {
       username: username[1],
-      password: username[1]
+      password: username[1],
     };
-    if (userinfo.username && username[0].split('?')[1] === 'name') {
-      login(userinfo).then(res => {
-        this.$store.commit('LOGIN_SUCCESS', res);
+    if (userinfo.username && username[0].split("?")[1] === "name") {
+      login(userinfo).then((res) => {
+        this.$store.commit("LOGIN_SUCCESS", res);
         Message.success({
-          message: '登录成功'
+          message: "登录成功",
         });
-        let preUrl = sessionStorage.getItem('preUrl');
+        let preUrl = sessionStorage.getItem("preUrl");
         this.$router.replace(preUrl);
       });
     }
   },
   mounted() {
-    document.getElementById('wrap').addEventListener('click', () => {
+    console.log('user:'+getUserInfo());
+    document.getElementById("wrap").addEventListener("click", () => {
       this.showmenu = false;
     });
   },
   methods: {
-    ...mapActions(['getArticleListAction', 'logout']),
-    ...mapMutations(['LOGIN_SUCCESS']),
+    ...mapActions(["getArticleListAction", "logout"]),
+    ...mapMutations(["LOGIN_SUCCESS"]),
+    ...mapGetters(['getUserInfo']),
     navClick(path) {
       this.$router.push(path);
       this.showmenu = false;
@@ -233,19 +254,19 @@ export default {
     // 跳转到github
     githublogin() {
       const preUrl = `${window.location.pathname}${window.location.search}`;
-      sessionStorage.setItem('preUrl', preUrl);
+      sessionStorage.setItem("preUrl", preUrl);
       // window.location.href = `https://github.com/login/oauth/authorize?client_id=eb12a53881547ca7c69f&redirect_uri=http://localhost:5001/api/v1/oauth/redirect`;
       window.location.href =
-        'https://github.com/login/oauth/authorize?client_id=eb12a53881547ca7c69f&redirect_uri=http://111.229.228.223:5001/api/v1/oauth/redirect';
+        "https://github.com/login/oauth/authorize?client_id=eb12a53881547ca7c69f&redirect_uri=http://111.229.228.223:5001/api/v1/oauth/redirect";
     },
     // 退出登录
     logOut() {
       this.logout();
       Message.success({
-        message: '成功退出登录'
+        message: "成功退出登录",
       });
-      if (this.$route.path !== '/home') {
-        this.$router.replace({ name: 'home' });
+      if (this.$route.path !== "/home") {
+        this.$router.replace({ name: "home" });
       }
     },
     // 搜索
@@ -253,86 +274,98 @@ export default {
       this.getArticleListAction(this.pagination);
     },
     openRegisDialog() {
-      this.title = 'regist';
-      this.login = 'register';
+      this.title = "regist";
+      this.login = "register";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['userInput'].focus();
+        this.$refs["userInput"].focus();
       });
     },
     openLoginDialog() {
-      this.login = 'login';
-      this.title = 'login';
+      this.login = "login";
+      this.title = "login";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['userInput'].focus();
+        this.$refs["userInput"].focus();
       });
     },
     closeDialog() {
-      this.registForm.username = '';
-      this.registForm.password = '';
-      this.registForm.password2 = '';
-      this.registForm.displayName = '';
-      this.$refs['userInput'].blur();
+      this.registForm.username = "";
+      this.registForm.password = "";
+      this.registForm.password2 = "";
+      this.registForm.displayName = "";
+      this.$refs["userInput"].blur();
     },
     resetForm(registForm) {
       this.$refs[registForm].resetFields();
       this.dialogFormVisible = false;
-      this.registForm.username = '';
-      this.registForm.password = '';
-      this.registForm.password2 = '';
-      this.registForm.displayName = '';
+      this.registForm.username = "";
+      this.registForm.password = "";
+      this.registForm.password2 = "";
+      this.registForm.displayName = "";
     },
     // 提交注册登录表单
     registConfirm() {
-      if (this.login === 'register') {
+      if (this.login === "register") {
         if (this.registForm.password !== this.registForm.password2) {
           Message.warning({
-            message: '两次密码不一致'
+            message: "两次密码不一致",
           });
           return;
         }
         let params = {
           username: this.registForm.username,
           displayName: this.registForm.displayName,
-          password: this.registForm.password
+          password: this.registForm.password,
         };
-        register(params).then(res => {
+        register(params).then((res) => {
           if (res.code === 0) {
             Message.success({
-              message: res.msg
+              message: res.msg,
             });
           } else if (res.code === 1) {
             Message.warning({
-              message: res.msg
+              message: res.msg,
             });
             return;
           }
           this.dialogFormVisible = false;
-          this.registForm.username = '';
-          this.registForm.password = '';
-          this.registForm.password2 = '';
-          this.registForm.displayName = '';
+          this.registForm.username = "";
+          this.registForm.password = "";
+          this.registForm.password2 = "";
+          this.registForm.displayName = "";
         });
-      } else if (this.login === 'login') {
+      } else if (this.login === "login") {
         let params = {
           username: this.registForm.username,
-          password: this.registForm.password
+          password: this.registForm.password,
         };
-        login(params).then(res => {
-          this.$store.commit('LOGIN_SUCCESS', res);
-          this.dialogFormVisible = false;
-          this.registForm.username = '';
-          this.registForm.password = '';
-          this.registForm.password2 = '';
-          this.registForm.displayName = '';
-          Message.success({
-            message: '登录成功'
-          });
+        login(params).then((res) => {
+          if (res.code == 0) {
+            console.log(res);
+            this.$store.commit("LOGIN_SUCCESS", res);
+            this.dialogFormVisible = false;
+            this.registForm.username = "";
+            this.registForm.password = "";
+            this.registForm.password2 = "";
+            this.registForm.displayName = "";
+
+            getUserInfo().then((res1) => {
+              if (res1.code == 0) {
+                console.log(res1);
+                this.user.avator_url = res1.result.avatarUrl;
+                this.$store.commit("SET_USERINFO", res1);
+              }
+            });
+
+            Message.success({
+              message: "登录成功",
+            });
+          }
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -429,7 +462,7 @@ export default {
         cursor: pointer;
         &:before {
           display: inline-block;
-          content: '';
+          content: "";
           height: 6px;
           width: 6px;
           border-radius: 50%;
@@ -496,5 +529,13 @@ export default {
   @media (max-width: 575px) {
     display: block;
   }
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 </style>

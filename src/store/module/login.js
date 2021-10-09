@@ -3,21 +3,25 @@ const state = {
   displayName: sessionStorage.getItem('displayName'),
   token: sessionStorage.getItem('token')
 };
-const getters = {};
+const getters = {
+  getUserInfo: (state) =>{
+    return JSON.parse(state.userinfo);
+  }
+};
 const mutations = {
   LOGIN_SUCCESS(state, payload) {
-    const { code, displayName, token } = payload;
+    const { code, msg } = payload;
     if (code === 0) {
-      sessionStorage.setItem('token', token);
-      sessionStorage.setItem('displayName', displayName);
-      state.displayName = displayName;
+      sessionStorage.setItem('token', msg);
       state.isLogin = true;
-      sessionStorage.setItem('islogin', state.isLogin);
     }
   },
   LOG_OUT(state, payload) {
     state.isLogin = false;
     state.displayName = '';
+  },
+  SET_USERINFO(state, payload){
+    state.userinfo = JSON.stringify(payload);
   }
 };
 const actions = {

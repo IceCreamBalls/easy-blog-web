@@ -1,21 +1,23 @@
 import Vue from 'vue';
-import {
-  Button,
-  Input,
-  Card,
-  pagination,
-  Dialog,
-  Form,
-  FormItem,
-  Tag,
-  Timeline,
-  TimelineItem,
-  Backtop,
-  Tooltip,
-  Icon,
-  Image,
-  Avatar
-} from 'element-ui';
+// import {
+//   Button,
+//   Input,
+//   Card,
+//   pagination,
+//   Dialog,
+//   Form,
+//   FormItem,
+//   Tag,
+//   Timeline,
+//   TimelineItem,
+//   Backtop,
+//   Tooltip,
+//   Icon,
+//   Image,
+//   Avatar,
+//   Dow
+// } from 'element-ui';
+import ElementUI from 'element-ui';
 import App from './App.vue';
 // import "./registerServiceWorker";
 import moment from 'moment';
@@ -34,21 +36,21 @@ VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error);
 };
 Vue.use(animated);
-Vue.use(Input)
-  .use(Button)
-  .use(pagination)
-  .use(Dialog)
-  .use(Form)
-  .use(FormItem)
-  .use(Tag)
-  .use(Timeline)
-  .use(TimelineItem)
-  .use(Backtop)
-  .use(Tooltip)
-  .use(Icon)
-  .use(Image)
-  .use(Avatar)
-  .use(Card);
+Vue.use(ElementUI);
+// .use(Input)
+  // .use(Button)
+  // .use(pagination)
+  // .use(Dialog)
+  // .use(Form)
+  // .use(FormItem)
+  // .use(Tag)
+  // .use(Timeline)
+  // .use(TimelineItem)
+  // .use(Backtop)
+  // .use(Tooltip)
+  // .use(Icon)
+  // .use(Image)
+  // .use(Avatar)
 Vue.config.productionTip = false;
 // 解决elementui打开模态框给body加padding-right 17px的问题
 function handlePadding() {

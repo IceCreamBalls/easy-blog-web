@@ -25,6 +25,7 @@
 // const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 module.exports = {
+  lintOnSave: false,
   // 以下是pwa配置
   pwa: {
     iconPaths: {
